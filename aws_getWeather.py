@@ -3,12 +3,12 @@ import requests
 import json
 import os
 from datetime import timedelta
-from psycopg2 import connect, sql
+from psycopg2 import connect
 
 
 def get_weather_data():
 
-    city_name = 'London'
+    city_name = 'london'
     api_key = os.getenv('API_KEY')
 
     coor_url = f'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&limit=5&appid={api_key}'
@@ -27,18 +27,15 @@ def get_weather_data():
     fore_req = requests.get(fore_url)
     json_data = json.loads(fore_req.text)
 
-    # Access the forecast list
     forecast_list = json_data.get('list', [])
     weather_data = []
 
     for forecast in forecast_list:
-        # Extract relevant data
         dt = pd.to_datetime(forecast['dt_txt'])
-        weather = forecast['weather'][0]  # Get first weather entry
+        weather = forecast['weather'][0]
         main = forecast['main']
         wind = forecast['wind']
         
-        # Collect data
         weather_data.append({
             'date': dt.date(),
             'time': dt.strftime('%H:%M:%S'),
@@ -52,7 +49,7 @@ def get_weather_data():
             'humidity': main['humidity'],
             'wind_speed': wind['speed'],
             'wind_deg': wind['deg'],
-            'wind_gust': wind.get('gust', None)  # gust might not always be present
+            'wind_gust': wind.get('gust', None)
         })
 
     weather_df = pd.DataFrame(weather_data)
@@ -73,10 +70,10 @@ def load_to_postgres(weather_df):
         return
 
     conn = connect(
-        dbname="your_db_name",
-        user="your_db_user",
-        password="your_db_password",
-        host="localhost",
+        dbname="weatherdb",
+        user="postgres",
+        password="khairumid04",
+        host="54.179.236.222",
         port="5432"
     )
 
