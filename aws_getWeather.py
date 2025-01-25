@@ -70,11 +70,11 @@ def load_to_postgres(weather_df):
         return
 
     conn = connect(
-        dbname="weatherdb",
-        user="postgres",
-        password="khairumid04",
-        host="54.179.236.222",
-        port="5432"
+        dbname="Your_db",
+        user="Your_user",
+        password="Your_password",
+        host="Your_host",
+        port="Your_port"
     )
 
     cursor = conn.cursor()
